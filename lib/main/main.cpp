@@ -17,22 +17,23 @@ void checkconnection() {
 	if (check == 0) {
 		std::cout << "stable connection!" << std::endl;
 	} else {
-		std::cout << "Connection refushed!" << std::endl;
+		std::cout << "connection is unstable, please check the connection before continuing to use this script!\n" << std::endl;
+		return;
 	}
 }
 
 class Output {
 	public:
 		void warn(const char* text) {
-			std::cout << "[WRN] " << text << std::endl;
+			std::cout << "[" << "\e[31m" << "WRN" << "\e[37m" << "] " << text << std::endl;
 		}
 
 		void info(const char* text) {
-			std::cout << "[INF] " << text << std::endl;
+			std::cout << "[" << "\e[32m" << "INF" << "\e[37m" << "] " << text << std::endl;
 		}
 
 		void debug(const char* text) {
-			std::cout << "[DBG] " << text << std::endl;
+			std::cout << "[" << "\e[34m" << "DBG" << "\e[37m" << "] " << text << std::endl;
 		}
 };
 
@@ -44,6 +45,7 @@ int main() {
 	Output opt;
 
 	system("clear");
+	log.debug("The system successfully cleared the terminal.");
 
 
 	checkconnection();
@@ -74,14 +76,18 @@ int main() {
 	// opt.debug("debug", "tes");
 	// intel(MERAH, "Tes");
 
-	std::cout << "[" << "\e[31m" << "root" << "\e[37m" <<"@intip]~# ";
-	std::getline(std::cin, intip);
+	while (true) {
 
-	if (intip == "1") {
-		std::cout << "intip";
-	} else if (intip == ".help") {
+		std::cout << "[" << "\e[31m" << "root" << "\e[37m" <<"@intip]~# ";
+		std::getline(std::cin, intip);
+
+		if (intip == "1") {
+			std::cout << "intip";
+		} else if (intip == ".help") {
 		
-	} else {
-		std::cout << "salah!";
+		} else {
+			opt.warn("you selected the wrong 'cmd' please use `help` to see the correct cmd!\n");
+			log.debug("User entered wrong input, no matching output!");
+		}
 	}
 }
