@@ -4,18 +4,18 @@
 #include <fstream>
 #include "module/logger.hpp"
 #define RESET "\e[37m"
-#define BIRU "\e[34m"
-#define HIJAU "\e[32m"
-#define MERAH "\e[31m"
+#define BLUE "\e[34m"
+#define GREEN "\e[32m"
+#define RED "\e[31m"
 
-void intel(const char* warna, const char* teks) {
-	std::cout << warna << teks << RESET << std::endl;
+void intel(const char* color, const char* text) {
+	std::cout << color << text << RESET << std::endl;
 }
 
 void checkconnection() {
 	int check = system("ping -c 4 google.com > /dev/null 2>&1");
 	if (check == 0) {
-		std::cout << "Connection stabil!" << std::endl;
+		std::cout << "stable connection!" << std::endl;
 	} else {
 		std::cout << "Connection refushed!" << std::endl;
 	}
@@ -69,12 +69,12 @@ int main() {
                    ,                                     ,                    
 	 )";
 	std::cout << "\t\t\tWelcome to IntipNet!\n";
-	std::cout << "to use IntipNet type help or start!";
+	std::cout << "\t\tto use IntipNet type help or start!\n\n";
 	// opt.warn("hello world?!");
 	// opt.debug("debug", "tes");
-	intel(MERAH, "Tes");
+	// intel(MERAH, "Tes");
 
-	std::cout << "[root@intip]~# ";
+	std::cout << "[" << "\e[31m" << "root" << "\e[37m" <<"@intip]~# ";
 	std::getline(std::cin, intip);
 
 	if (intip == "1") {
