@@ -51,34 +51,10 @@ int main() {
 
 	checkconnection();
 
-	// system("clear");
-	
-	// std::cout << R"(
-                                                                              
-                                                                              
-      // L.                                    L.                     ,;         
-  // t   EW:        ,ft          t   t         EW:        ,ft       f#i          
-  // Ej  E##;       t#E GEEEEEEELEj  ED.       E##;       t#E     .E#t  GEEEEEEEL
-  // E#, E###t      t#E ,;;L#K;;.E#, E#K:      E###t      t#E    i#W,   ,;;L#K;;.
-  // E#t E#fE#f     t#E    t#E   E#t E##W;     E#fE#f     t#E   L#D.       t#E   
-  // E#t E#t D#G    t#E    t#E   E#t E#E##t    E#t D#G    t#E :K#Wfff;     t#E   
-  // E#t E#t  f#E.  t#E    t#E   E#t E#ti##f   E#t  f#E.  t#E i##WLLLLt    t#E   
-  // E#t E#t   t#K: t#E    t#E   E#t E#t ;##D. E#t   t#K: t#E  .E#L        t#E   
-  // E#t E#t    ;#W,t#E    t#E   E#t E#ELLE##K:E#t    ;#W,t#E    f#E:      t#E   
-  // E#t E#t     :K#D#E    t#E   E#t E#L;;;;;;,E#t     :K#D#E     ,WW;     t#E   
-  // E#t E#t      .E##E    t#E   E#t E#t       E#t      .E##E      .D#;    t#E   
-  // E#t ..         G#E     fE   E#t E#t       ..         G#E        tt     fE   
-  // ,;.             fE      :   ,;.                       fE                :   
-                   // ,                                     ,                    
-	 // )";
-
 	banner();
 	log.debug("'banner()' function was called successfully");
 	std::cout << "\t\t\tWelcome to IntipNet!\n";
 	std::cout << "\t\tto use IntipNet type help or start!\n\n";
-	// opt.warn("hello world?!");
-	// opt.debug("debug", "tes");
-	// intel(MERAH, "Tes");
 
 	while (true) {
 
@@ -86,12 +62,23 @@ int main() {
 		std::getline(std::cin, intip);
 
 		if (intip == "help") {
-			std::cout << "CMD\n\n";
+			intel(BLUE, "CMD\n");
+			intel(RED, "Option:\n");
 			std::cout << "help <option> — to display the help menu specifically\n";
-			std::cout << "start <option> — to perform scanning or run scripts\n";
+			std::cout << "start <option> — to perform scanning or run scripts\n\n";
+			intel(RED, "Scanning:\n");
+			std::cout << "sql — to display menu sql test scan\n";
+			std::cout << "sub — subdomain enumeration\n";
+			std::cout << "xss — to enumerate scan xss\n\n";
 			// std::cout << ""
-		} else if (intip == ".help") {
-		
+		} else if (intip == "help sql") {
+			intel(BLUE, "CMD\n");
+			intel(RED, "Description:\n");
+			std::cout << "SQL Injection — Using popular tools to detect more accurately using the 'sqlmap' tool\n";
+			intel(RED, "Option:\n");
+			std::cout << "sql start — start sql injection with standard method\n";
+			std::cout << "sql dump — to dump database with standard method\n";
+			std::cout << "sql custom — customize method\n\n";
 		} else {
 			opt.warn("you selected the wrong 'cmd' please use `help` to see the correct cmd!\n");
 			log.debug("User entered wrong input, no matching output!");
