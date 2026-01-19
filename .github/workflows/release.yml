@@ -11,7 +11,7 @@ jobs:
     permissions:
       contents: write
     strategy:
-      fail-fast: false  # Agar jika satu gagal, yang lain tetap jalan
+      fail-fast: false
       matrix:
         include:
           - arch: amd64
@@ -32,17 +32,14 @@ jobs:
         sudo apt-get update
         sudo apt-get install -y zip ${{ matrix.pkg }}
 
-    - name: Verify tools
-      run: |
-        which ${{ matrix.compiler }} || echo "Compiler not found"
-        which ${{ matrix.strip }} || echo "Strip not found"
-
-    - name: Build binary
+    - name: Build binary (Static)
       run: |
         mkdir -p build
-        ${{ matrix.compiler }} lib/main/main.cpp lib/main/module/banner.cpp lib/main/module/logger.cpp lib/main/module/message.cpp \
+        # Menggunakan wildcard agar semua file .cpp di dalam module ikut ter-compile
+        ${{ matrix.compiler }} lib/main/main.cpp lib/main/module/*.cpp \
         -o build/intipnet \
-        -Wall -Wextra -std=c++17 -Iinclude
+        -Wall -Wextra -std=c++17 -Iinclude \
+        -static
 
     - name: Strip binary
       run: ${{ matrix.strip }} build/intipnet
