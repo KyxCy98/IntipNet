@@ -1,0 +1,7 @@
+{
+	"name": "IntipNet Dev",
+	"image": "mcr.microsoft.com/devcontainers/cpp:ubuntu",
+	"features": {
+		"ghcr.io/devcontainers/features/git:1": {}
+	}
+}
