@@ -11,7 +11,7 @@ jobs:
 
     steps:
     - name: Checkout repo
-      uses: action/checkout@v4
+      uses: actions/checkout@v4
 
     - name: Install compiler
       run: sudo apt update && sudo apt upgrade -y g++
