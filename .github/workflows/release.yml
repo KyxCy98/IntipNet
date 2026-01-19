@@ -11,14 +11,17 @@ jobs:
     permissions:
       contents: write
     strategy:
+      fail-fast: false  # Agar jika satu gagal, yang lain tetap jalan
       matrix:
         include:
           - arch: amd64
             compiler: g++
             strip: strip
+            pkg: ""
           - arch: aarch64
-            compiler: g++-aarch64-linux-gnu
+            compiler: aarch64-linux-gnu-g++
             strip: aarch64-linux-gnu-strip
+            pkg: "g++-aarch64-linux-gnu binutils-aarch64-linux-gnu"
 
     steps:
     - name: Checkout repo
@@ -26,9 +29,13 @@ jobs:
 
     - name: Install compilers and tools
       run: |
-        sudo apt update
-        # Menambahkan binutils untuk perintah strip
-        sudo apt install -y g++ g++-aarch64-linux-gnu binutils-aarch64-linux-gnu zip
+        sudo apt-get update
+        sudo apt-get install -y zip ${{ matrix.pkg }}
+
+    - name: Verify tools
+      run: |
+        which ${{ matrix.compiler }} || echo "Compiler not found"
+        which ${{ matrix.strip }} || echo "Strip not found"
 
     - name: Build binary
       run: |
