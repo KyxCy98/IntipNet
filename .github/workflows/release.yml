@@ -1,0 +1,29 @@
+name: Build & Release
+
+on:
+  push:
+    tags:
+      - "v*"
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repo
+      uses: action/checkout@v4
+
+    - name: Install compiler
+      run: sudo apt update && sudo apt upgrade -y g++
+
+    - name: Build binary
+      run: |
+        g++ lib/main/main.cpp lib/main/module/banner.cpp lib/main/module/logger.cpp lib/main/module/message.cpp -o build/intipnet -Wall -Wextra -std=c++17 -Iinclude
+
+    - name: Strip binary
+      run: strip intipnet
+
+    - name: Upload Release
+      uses: softprops/action-gh-release@v1
+      with:
+        files: build/intipnet
