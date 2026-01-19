@@ -9,25 +9,26 @@ jobs:
   build:
     runs-on: ubuntu-latest
     permissions:
-      contents: write  # Sudah diperbaiki (sebelumnya 'content')
+      contents: write
     strategy:
       matrix:
         include:
           - arch: amd64
             compiler: g++
-            target: x86_64-linux-gnu
+            strip: strip
           - arch: aarch64
             compiler: g++-aarch64-linux-gnu
-            target: aarch64-linux-gnu
+            strip: aarch64-linux-gnu-strip
 
     steps:
     - name: Checkout repo
       uses: actions/checkout@v4
 
-    - name: Install compilers
+    - name: Install compilers and tools
       run: |
         sudo apt update
-        sudo apt install -y g++ g++-aarch64-linux-gnu zip
+        # Menambahkan binutils untuk perintah strip
+        sudo apt install -y g++ g++-aarch64-linux-gnu binutils-aarch64-linux-gnu zip
 
     - name: Build binary
       run: |
@@ -37,13 +38,7 @@ jobs:
         -Wall -Wextra -std=c++17 -Iinclude
 
     - name: Strip binary
-      run: |
-        # Menggunakan strip yang sesuai dengan arsitektur
-        if [ "${{ matrix.arch }}" = "aarch64" ]; then
-          aarch64-linux-gnu-strip build/intipnet
-        else
-          strip build/intipnet
-        fi
+      run: ${{ matrix.strip }} build/intipnet
 
     - name: Create ZIP archive
       run: |
