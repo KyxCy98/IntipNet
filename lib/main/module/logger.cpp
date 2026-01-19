@@ -1,6 +1,7 @@
 #include "logger.hpp"
 #include <iostream>
 #include <ctime>
+#include <cstring>
 
 Logger::Logger(const std::string& filename)
 {
