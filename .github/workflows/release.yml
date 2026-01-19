@@ -21,7 +21,7 @@ jobs:
         g++ lib/main/main.cpp lib/main/module/banner.cpp lib/main/module/logger.cpp lib/main/module/message.cpp -o build/intipnet -Wall -Wextra -std=c++17 -Iinclude
 
     - name: Strip binary
-      run: strip intipnet
+      run: strip build/intipnet
 
     - name: Upload Release
       uses: softprops/action-gh-release@v1
