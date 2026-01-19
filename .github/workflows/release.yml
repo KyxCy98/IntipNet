@@ -9,23 +9,51 @@ jobs:
   build:
     runs-on: ubuntu-latest
     permissions:
-      content: write
+      contents: write  # Sudah diperbaiki (sebelumnya 'content')
+    strategy:
+      matrix:
+        include:
+          - arch: amd64
+            compiler: g++
+            target: x86_64-linux-gnu
+          - arch: aarch64
+            compiler: g++-aarch64-linux-gnu
+            target: aarch64-linux-gnu
 
     steps:
     - name: Checkout repo
       uses: actions/checkout@v4
 
-    - name: Install compiler
-      run: sudo apt update && sudo apt upgrade -y g++
+    - name: Install compilers
+      run: |
+        sudo apt update
+        sudo apt install -y g++ g++-aarch64-linux-gnu zip
 
     - name: Build binary
       run: |
-        g++ lib/main/main.cpp lib/main/module/banner.cpp lib/main/module/logger.cpp lib/main/module/message.cpp -o build/intipnet -Wall -Wextra -std=c++17 -Iinclude
+        mkdir -p build
+        ${{ matrix.compiler }} lib/main/main.cpp lib/main/module/banner.cpp lib/main/module/logger.cpp lib/main/module/message.cpp \
+        -o build/intipnet \
+        -Wall -Wextra -std=c++17 -Iinclude
 
     - name: Strip binary
-      run: strip build/intipnet
+      run: |
+        # Menggunakan strip yang sesuai dengan arsitektur
+        if [ "${{ matrix.arch }}" = "aarch64" ]; then
+          aarch64-linux-gnu-strip build/intipnet
+        else
+          strip build/intipnet
+        fi
+
+    - name: Create ZIP archive
+      run: |
+        cd build
+        zip intipnet-linux-${{ matrix.arch }}.zip intipnet
+        cd ..
 
     - name: Upload Release
       uses: softprops/action-gh-release@v1
       with:
-        files: build/intipnet
+        files: build/intipnet-linux-${{ matrix.arch }}.zip
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
