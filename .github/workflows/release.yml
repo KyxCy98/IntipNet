@@ -39,7 +39,8 @@ jobs:
         ${{ matrix.compiler }} lib/main/main.cpp lib/main/module/*.cpp \
         -o build/intipnet \
         -Wall -Wextra -std=c++17 -Iinclude \
-        -static
+        -static \
+        -fno-stack-protector -Wl,--hash-style=both
 
     - name: Strip binary
       run: ${{ matrix.strip }} build/intipnet
