@@ -110,24 +110,9 @@ int main() {
 		if (intip == "help") {
 			log.debug("User gives output 'intip == `help`' and it is executed successfully!");
 			msgHelp();
-			// intel(BLUE, "CMD\n");
-			// intel(RED, "Option:\n");
-			// std::cout << "help <option> — to display the help menu specifically\n";
-			// std::cout << "start <option> — to perform scanning or run scripts\n\n";
-			// intel(RED, "Scanning:\n");
-			// std::cout << "sql — to display menu sql test scan\n";
-			// std::cout << "sub — subdomain enumeration\n";
-			// std::cout << "xss — to enumerate scan xss\n\n";
-			// std::cout << ""
 		} else if (intip == "help sql") {
 			log.debug("User gives output 'intip == `help sql`' and it is executed successfully!");
-			intel(BLUE, "CMD\n");
-			intel(RED, "Description:\n");
-			std::cout << "SQL Injection — Using popular tools to detect more accurately using the 'sqlmap' tool\n";
-			intel(RED, "Option:\n");
-			std::cout << "sql start — start sql injection with standard method\n";
-			std::cout << "sql dump — to dump database with standard method\n";
-			std::cout << "sql custom — customize method\n\n";
+			showSql();
 	    } else if (intip == "sql") {
 	    	shell.QLDefault();
 		} else {

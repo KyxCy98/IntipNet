@@ -16,3 +16,13 @@ void msgHelp() {
 	std::cout << "sub — subdomain enumeration\n";
 	std::cout << "xss — to enumerate scan xss\n\n";
 }
+
+void showSql() {
+	std::cout << BLUE << "CMD\n" << RESET << std::endl;
+	std::cout << RED << "Description:\n" << RESET << std::endl;
+	std::cout << "SQL Injection - Using popular tools to detect more accurately using 'sqlmap' tools\n";
+	std::cout << RED << "Option:\n" << RESET << std::endl;
+    std::cout << "sql start — start sql injection with standard method\n";
+    std::cout << "sql dump — to dump database with standard method\n";
+    std::cout << "sql custom — customize method\n\n";
+}
