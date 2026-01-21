@@ -6,6 +6,7 @@
 #include "logger.hpp"
 #include "message.hpp"
 #include "banner.hpp"
+#include "engine.hpp"
 #define RESET "\e[37m"
 #define BLUE "\e[34m"
 #define GREEN "\e[32m"
@@ -72,12 +73,20 @@ class Start {
 		}
 		
 		void QLStart() {
+			log.info("'QLStart' successfully executed!.");
 			std::string input;
+			std::cout << "The script asks you to enter the tool options you want to use to check for SQL injection." << std::endl;
+			std::cout << "1. Use tool sqlmap for testing" << std::endl;
+			std::cout << "2. Use custom tools for testing\n" << std::endl;
 			std::cout << "[" << "\e[31m" << "root" << "\e[37m" <<"@intip] Sql# ";
 			std::getline(std::cin, input);
 
 			if (input == "1") {
-				log.info("tes executed!");
+				
+			} else if (input == "2") {
+				
+			} else {
+				
 			}
 		}
 };
@@ -89,8 +98,10 @@ int main() {
 	log.info("Started IntipNet");
 	shell.scan("nmap");
 	std::string intip;
+	// Engine::Command::exec("ls");
 
 	system("clear");
+	Engine::Command::exec("ls");
 	log.debug("The system successfully cleared the terminal.");
 	// system("rm -fr debug");
 	// log.info("System has been removed old debug!");
@@ -115,6 +126,8 @@ int main() {
 			showSql();
 	    } else if (intip == "sql") {
 	    	shell.QLDefault();
+		} else if (intip == "sql start") {
+			shell.QLStart();
 		} else {
 			opt.warn("you selected the wrong 'cmd' please use `help` to see the correct cmd!\n");
 			log.debug("User entered wrong input, no matching output!");

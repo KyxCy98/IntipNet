@@ -1,7 +1,7 @@
 cxx = clang++
 cxxflag = -Wall -Wextra -std=c++17 -Iinclude -fsanitize=address
 
-src = lib/main/main.cpp lib/main/module/banner.cpp lib/main/module/logger.cpp lib/main/module/message.cpp
+src = lib/main/main.cpp lib/main/module/banner.cpp lib/main/module/logger.cpp lib/main/module/message.cpp lib/main/module/engine.cpp
 out = build/intipnet
 
 all: $(out)
