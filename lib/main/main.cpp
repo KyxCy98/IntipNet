@@ -3,6 +3,7 @@
 #include <cstdlib>
 #include <fstream>
 #include <sys/stat.h>
+#include "nlohmann/json.hpp"
 #include "logger.hpp"
 #include "message.hpp"
 #include "banner.hpp"
@@ -11,6 +12,8 @@
 #define BLUE "\e[34m"
 #define GREEN "\e[32m"
 #define RED "\e[31m"
+
+using json = nlohmann::json;
 
 void intel(const char* color, const char* text) {
 	std::cout << color << text << RESET << std::endl;
@@ -41,7 +44,7 @@ class Output {
 		}
 };
 
-class Start {
+class Start {		
 	public:
 		Logger log{"debug/debug.log"};
 		Output opt;
@@ -51,6 +54,18 @@ class Start {
 			system(cmd.c_str());
 			log.debug(shellcmd);
 			log.info("successfully executed shell");
+		}
+
+		//
+		// Json for template
+		//
+		void render(const char* ren) {
+			// std::string name = cfg["name"];
+			std::ifstream f(ren);
+			json cfg = json::parse(f);
+			std::string name = cfg["name"];
+
+			std::cout << name << std::endl;
 		}
 
 		//
@@ -82,7 +97,17 @@ class Start {
 			std::getline(std::cin, input);
 
 			if (input == "1") {
-				
+				log.info("Input user successfully executed!");
+				std::string target;
+				std::cout << "Enter the template to use this:)" << std::endl;
+				std::cout << "1. Normally template\n2. Custom template\n3. With ML Bypass(Beta)" << std::endl;
+				std::cout << "[" << "\e[31m" << "root" << "\e[37m" << "@intip] sqlmap# ";
+				std::getline(std::cin, target);
+
+				if (target == "1") {
+					render("templates/config.json");
+				}
+					
 			} else if (input == "2") {
 				
 			} else {
@@ -101,10 +126,7 @@ int main() {
 	// Engine::Command::exec("ls");
 
 	system("clear");
-	Engine::Command::exec("ls");
 	log.debug("The system successfully cleared the terminal.");
-	// system("rm -fr debug");
-	// log.info("System has been removed old debug!");
 
 	checkconnection();
 
