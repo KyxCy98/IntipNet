@@ -65,8 +65,11 @@ class Start {
 		void render(const char* ren) {
 			// std::string name = cfg["name"];
 			std::ifstream f(ren);
+			log.debug("called ifstream");
+			log.debug(ren);
 			json cfg = json::parse(f);
 			name = cfg["name"];
+			log.debug("called string 'name' in config templates");
 
 			std::cout << name << std::endl;
 		}
