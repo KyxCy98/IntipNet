@@ -44,7 +44,10 @@ class Output {
 		}
 };
 
-class Start {		
+class Start {
+	private:
+		std::string name;
+		
 	public:
 		Logger log{"debug/debug.log"};
 		Output opt;
@@ -63,7 +66,7 @@ class Start {
 			// std::string name = cfg["name"];
 			std::ifstream f(ren);
 			json cfg = json::parse(f);
-			std::string name = cfg["name"];
+			name = cfg["name"];
 
 			std::cout << name << std::endl;
 		}
