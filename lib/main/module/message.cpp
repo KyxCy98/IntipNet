@@ -26,3 +26,19 @@ void showSql() {
     std::cout << "sql dump — to dump database with standard method\n";
     std::cout << "sql custom — customize method\n\n";
 }
+
+namespace Message {
+	namespace Public {
+		void MenuSql() {
+			std::cout << "testing" << std::endl;
+		}
+	}
+	
+	namespace Error {
+		void ErrorInput() {
+			std::cout << "\n[-] Unknown command" << std::endl;
+			std::cout << "[-] Usage: help [options]\n" << std::endl;
+		}
+	}
+	
+}

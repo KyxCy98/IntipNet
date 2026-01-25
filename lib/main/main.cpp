@@ -46,7 +46,14 @@ class Output {
 
 class Start {
 	private:
+		//
+		// LOAD CONFIG
+		//	
 		std::string name;
+		std::string desc;
+		std::string shell;
+		std::string author;
+		std::string arg;
 		
 	public:
 		Logger log{"debug/debug.log"};
@@ -61,19 +68,26 @@ class Start {
 
 		//
 		// Json for template
-		//
-		void render(const char* ren) {
-			// std::string name = cfg["name"];
-			std::ifstream f(ren);
-			log.debug("called ifstream");
-			log.debug(ren);
-			json cfg = json::parse(f);
-			name = cfg["name"];
-			log.debug("called string 'name' in config templates");
+		//		
+	    void render(const char* ren) {
+	    	std::ifstream f(ren);
 
-			std::cout << name << std::endl;
-		}
+	    	if (!f.is_open()) {
+	    		log.warn("file template not found!");
+	    		return;
+	    	}
 
+	    	try {
+	    		json cfg = json::parse(f);
+	    		name	= cfg.value("name", "null");
+	    		desc	= cfg.value("desc", "null");
+	    		shell   = cfg.value("shell", "null");
+	    		author	= cfg.value("author", "null");
+	    		arg		= cfg.value("arg", "null");
+	    	} catch (json::exception& e) {
+	    		log.warn("HIT -> " + std::string(e.what()));
+	    	}
+	    }
 		//
 		// QL = SQL
 		//
@@ -111,13 +125,13 @@ class Start {
 				std::getline(std::cin, target);
 
 				if (target == "1") {
-					render("templates/config.json");
+					Engine::Command::exec(this->shell);
 				}
 					
 			} else if (input == "2") {
 				
 			} else {
-				
+				Message::Error::ErrorInput();
 			}
 		}
 };
@@ -157,7 +171,7 @@ int main() {
 		} else if (intip == "sql start") {
 			shell.QLStart();
 		} else {
-			opt.warn("you selected the wrong 'cmd' please use `help` to see the correct cmd!\n");
+			Message::Error::ErrorInput();
 			log.debug("User entered wrong input, no matching output!");
 		}
 	}

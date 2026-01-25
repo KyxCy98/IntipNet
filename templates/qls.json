@@ -1,0 +1,7 @@
+{
+	"name": "Basic Scanning",
+	"desc": "sqlmap script for running basic test"
+	"shell": "sqlmap"
+	"author": ""
+	"arg": ""
+}
