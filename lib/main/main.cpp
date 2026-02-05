@@ -24,7 +24,7 @@ void checkconnection() {
 	if (check == 0) {
 		std::cout << "stable connection!" << std::endl;
 	} else {
-		std::cout << "connection is unstable, please check the connection before continuing to use this script!\n" << std::endl;
+		Message::Error::ErrorConnection();
 		return;
 	}
 }
@@ -110,35 +110,150 @@ class Start {
 		void QLStart() {
 			log.info("'QLStart' successfully executed!.");
 			std::string input;
-			std::cout << "The script asks you to enter the tool options you want to use to check for SQL injection." << std::endl;
-			std::cout << "1. Use tool sqlmap for testing" << std::endl;
-			std::cout << "2. Use custom tools for testing\n" << std::endl;
-			std::cout << "[" << "\e[31m" << "root" << "\e[37m" <<"@intip] Sql# ";
+			Message::Sql::Sql();
+			std::cout << "[" << "\e[31m" << "root" << "\e[37m" <<"@intip/module/sql] ~# ";
 			std::getline(std::cin, input);
 
 			if (input == "1") {
 				log.info("Input user successfully executed!");
 				std::string target;
-				std::cout << "Enter the template to use this:)" << std::endl;
-				std::cout << "1. Normally template\n2. Custom template\n3. With ML Bypass(Beta)" << std::endl;
-				std::cout << "[" << "\e[31m" << "root" << "\e[37m" << "@intip] sqlmap# ";
+				Message::Sql::Menu();
+				std::cout << "[" << "\e[31m" << "root" << "\e[37m" << "@intip/module/sql] ~# ";
 				std::getline(std::cin, target);
 
 				if (target == "1") {
-					Engine::Command::exec(this->shell);
+					std::string target;
+					std::cout << "[" << "\e[31m" << "root" << "\e[37m" << "@intip/module/sql] ~/target# ";
+					std::getline(std::cin, target);
+					
+					if (!target.empty()) {
+						std::string cmd = "sqlmap -u " + target + "--batch --dbs --tamper=space2comment,between,default --hex --level 5 --risk 3 -v 3";
+
+						log.info("running sqlmap with cli " + cmd);
+
+						int result = Engine::Command::exec(cmd);
+
+						if (result != 0) {
+							Message::Sql::Error();
+						}
+					} else {
+						Message::Error::ErrorInput();
+					}
+					
+				} else if (input == "2") {
+					std::string target;
+					std::cout << "[" << "\e[31m" << "root" << "\e[37m" << "@intip/module/sql] ~/custom# ";
+					std::getline(std::cin, target);
+
+					if (!target.empty()) {
+						std::string cmd;
+
+						if (cmd.find("sqlmap") == std::string::npos) {
+							cmd = "sqlmap " + target;
+
+							log.info("Engime started!, successully called engine");
+
+							int result = Engine::Command::Exec(cmd);
+
+							if (result != 0) {
+								int error = Message::Sql::Error();
+								log.debug("Engine Hitting something.. " + error);
+							}
+							
+						} else {
+							cmd = target;
+						}
+
+						// Engine::Command::exec(cmd);
+					} else {
+						Message::Error::ErrorInput();
+					}
+					
+				} else if (input == "3") {
+					Message::Updater::UpdateML();
 				}
 					
 			} else if (input == "2") {
-				
+				Message::Updater::UpdateSC();
 			} else {
 				Message::Error::ErrorInput();
+			}
+		}
+
+		void QLdump() {
+			std::string input;
+			Message::Sql::dumpSql();
+			std::cout << "[" << "\e[31m" << "root" << "\e[37m" << "@intip/module/sqlDump] ~# ";
+			std::getline(std::cin, input);
+
+			if (target == "1") {
+				std::string target;
+				std::string db;
+				// log.info("\nPlease input the target")
+	 			std::cout << "[" << "\e[31m" << "root" << "\e[37m" << "@intip/module/sqlDump] ~/target# ";
+	 			// log.info("\nPlease input the database")
+				std::getline(std::cin, input);
+	 			std::cout << "[" << "\e[31m" << "root" << "\e[37m" << "@intip/module/sqlDump] ~/database# ";
+				std::getline(std::cin, input);
+
+				if (!target.empty) {
+					std::string cmd = "sqlmap -u " + target + "--batch -D " + db + " --dump --risk 3 --level 5 --tamper=space2comment --thread 10 --random-agent"
+
+					log.info("Engine started, successfully called function");
+					
+					int result = Engine::Command::Exec(cmd);
+
+					if (result != 0) {
+						int output = Message::Sql:Error();
+						log.debug("Engine hitting something..." + output);
+					}
+					
+				} else {
+					Message::Error::ErrorInput();
+					log.warn("Message::Error::ErrorInput(); : Warning user entered wrong output")
+				}
+				
+			} else if (target == "2") {
+				std::string target;
+				std::string db;
+	 			std::cout << "[" << "\e[31m" << "root" << "\e[37m" << "@intip/module/sqlDump] ~/target# ";
+				std::getline(std::cin, input);
+	 			std::cout << "[" << "\e[31m" << "root" << "\e[37m" << "@intip/module/sqlDump] ~/database# ";
+				std::getline(std::cin, input);
+
+				if (!target.empty) {
+				
+					std::string cmd = "sqlmap -u " + target + "--batch -D " + db + " --dump-all --risk 3 --level 5 --tamper=space2comment --thread 10 --random-agent"
+				} else {
+					Message::Error::ErrorInput();
+				}
+				
+			} else if (target == "3") {
+				std::string target;
+				std::string db;
+				std::string table;
+				std::string column;
+	 			std::cout << "[" << "\e[31m" << "root" << "\e[37m" << "@intip/module/sqlDump] ~/target# ";
+				std::getline(std::cin, input);
+	 			std::cout << "[" << "\e[31m" << "root" << "\e[37m" << "@intip/module/sqlDump] ~/database# ";
+				std::getline(std::cin, input);
+	 			std::cout << "[" << "\e[31m" << "root" << "\e[37m" << "@intip/module/sqlDump] ~/table# ";
+				std::getline(std::cin, input);
+	 			std::cout << "[" << "\e[31m" << "root" << "\e[37m" << "@intip/module/sqlDump] ~/column# ";
+				std::getline(std::cin, input);
+
+				if (!target.empty()) {
+					std::string cmd = "sqlmap -u " + target + "--batch -D " + db + " -T " + table +  " -C " + column + " --risk 3 --level 5 --tamper=space2comment --thread 10 --random-agent"
+				} else {
+					Message::Error::ErrorInput();
+				}
 			}
 		}
 };
 
 int main() {
 	Logger log("debug/debug.log");
-	Output opt;
+	// Output opt;
 	Start shell;
 	log.info("Started IntipNet");
 	shell.scan("nmap");
@@ -162,10 +277,10 @@ int main() {
 
 		if (intip == "help") {
 			log.debug("User gives output 'intip == `help`' and it is executed successfully!");
-			msgHelp();
+			Message::Default::msgHelp();
 		} else if (intip == "help sql") {
 			log.debug("User gives output 'intip == `help sql`' and it is executed successfully!");
-			showSql();
+			Message::Default::showSql();
 	    } else if (intip == "sql") {
 	    	shell.QLDefault();
 		} else if (intip == "sql start") {
