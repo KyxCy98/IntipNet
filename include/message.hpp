@@ -18,9 +18,16 @@ namespace Message {
 		void dumpSql();
 	}
 
+	namespace Xss {
+		void Xss();
+		void Menu();
+		void Warn();
+	}
+
 	namespace Error {
 		void ErrorInput();
 		void ErrorConnection();
+		void Global();
 	}
 
 	namespace Updater {

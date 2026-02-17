@@ -59,6 +59,28 @@ namespace Message {
 			std::cout << "	(5) Dump by automatic" << std::endl;
 		}
 	}
+
+	// section xss
+
+	namespace Xss {
+		void Xss() {
+			std::cout << '\n' << std::endl;
+		}
+
+		void Menu() {
+    		std::cout << BLUE << "CMD\n" << RESET << std::endl;
+    		std::cout << RED << "Description:\n" << RESET << std::endl;
+    		std::cout << "Cross-Site Scripting (XSS) - Advanced parameter analysis and scanning using 'dalfox'\n";
+    		std::cout << RED << "Option:\n" << RESET << std::endl;
+    		std::cout << "xss url    — scan a single target URL for XSS vulnerabilities\n";
+		    std::cout << "xss pipe   — scan targets from list/stdout (pipeline mode)\n";
+    		std::cout << "xss sxss   — blind/stored XSS scanning with custom header/payload\n\n";
+		}
+
+		void Warn() {
+			std::cout << "\nHEY! Ensure that Dalfox has been installed before conducting penetration testing on the target website." << std::endl;
+		}
+	}
 	
 	namespace Error {
 		//
@@ -75,6 +97,10 @@ namespace Message {
 		void ErrorConnection() {
 			std::cout << "\n[-] [Code: E-204] Connection is unstable, please check your connection before running it" << std::endl;
 			std::cout << "[-] [Code: E-204] Did you use proxy?" << std::endl;
+		}
+
+		void Global() {
+			std::cout << "\n[-] [Code: E-301] This is a global message in the script, stating that the script cannot run the module. Please double-check before running the script." << std::endl;
 		}
 	}
 

