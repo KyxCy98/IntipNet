@@ -34,6 +34,10 @@ namespace Message {
 		void UpdateML();
 		void UpdateSC();
 	}
+
+	namespace Exit {
+		void ExitMSG();
+	}
 }
 
 #endif

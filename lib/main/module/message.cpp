@@ -114,4 +114,10 @@ namespace Message {
 		}
 	}
 	
+	// message section
+	namespace Exit {
+		void ExitMSG() {
+			std::cout << "Thank you for using me:}" << std::endl;
+		}
+	}
 }

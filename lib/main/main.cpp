@@ -5,9 +5,11 @@
 #include <sys/stat.h>
 #include "nlohmann/json.hpp"
 #include "logger.hpp"
+#include <unordered_map>
 #include "message.hpp"
 #include "banner.hpp"
 #include "engine.hpp"
+#include "AutoRun.hpp"
 #define RESET "\e[37m"
 #define BLUE "\e[34m"
 #define GREEN "\e[32m"
@@ -268,14 +270,14 @@ class Start {
 
 		// xss ssection
 		void XSStart() {
-			Message::Xss::Xss();
+			Message::Xss::Menu();
 		}
 
 		void XSSdetect() {
 			Message::Xss::Warn();
 		}
 
-		void Menu()	{
+		void XSSMenu()	{
 			Message::Xss::Menu();
 			std::string input;
 			std::cout << "[" << "\e[31m" << "root" << "\e[37m" << "@intip/module/xss] ~# ";
@@ -290,46 +292,64 @@ class Start {
 };
 
 int main() {
-	Logger log("debug/debug.log");
-	// Output opt;
-	Start shell;
-	log.info("Started IntipNet");
-	shell.scan("nmap");
-	std::string intip;
-	// Engine::Command::exec("ls");
+    // Resource
+    Logger log("debug/debug.log");
+    Start shell;
+    std::string userInput;
+    log.info("Started IntipNet");
+    shell.scan("nmap");
 
-	system("clear");
-	log.debug("The system successfully cleared the terminal.");
+    std::cout << "\033[2J\033[1;1H"; 
+    log.debug("Terminal cleared successfully.");
 
-	checkconnection();
+    checkconnection();
+    banner();
+    log.debug("'banner()' called successfully");
 
-	banner();
-	log.debug("'banner()' function was called successfully");
-	std::cout << "\t\t\tWelcome to IntipNet!\n";
-	std::cout << "\t\t\tto use IntipNet type help or start!\n\n";
+    std::cout << "\t\t\tWelcome to IntipNet!\n";
+    std::cout << "\t\t\tTo use IntipNet type 'help' or 'start'!\n\n";
 
-	while (true) {
+    while (true) {
+        std::cout << "[\033[31mroot\033[37m@intip]~# ";
+        
+        if (!std::getline(std::cin, userInput) || userInput == "exit" || userInput == "q") {
+            log.info("User exited the session.");
+			Message::Exit::ExitMSG();
+            break;
+        }
 
-		std::cout << "[" << "\e[31m" << "root" << "\e[37m" <<"@intip]~# ";
-		std::getline(std::cin, intip);
+        // Command Handling
+        if (userInput == "help" || userInput == "ls") {
+            log.debug("Executing help command");
+            Message::Default::msgHelp();
+        } 
+        else if (userInput == "help sql") {
+            log.debug("Executing help sql command");
+            Message::Default::showSql();
+        } 
+        else if (userInput == "sql") {
+			Auto::Exec::PortScanner::start("jmbot");
+			Auto::Exec::PortScanner::end();
+            shell.QLDefault();
+        } 
+        else if (userInput == "sql start") {
+            shell.QLStart();
+        } 
+        else if (userInput == "xss" || userInput == "xss help") {
+            shell.XSStart();
+        } 
+        else if (userInput == "xss url") {
+            shell.XSSMenu();
+        } 
+        else if (userInput == "cls" || userInput == "clear") {
+            Engine::Command::exec("clear");
+            banner();
+        } 
+        else if (!userInput.empty()) {
+            Message::Error::ErrorInput();
+            log.debug("Unknown input: " + userInput);
+        }
+    }
 
-		if (intip == "help") {
-			log.debug("User gives output 'intip == `help`' and it is executed successfully!");
-			Message::Default::msgHelp();
-		} else if (intip == "help sql") {
-			log.debug("User gives output 'intip == `help sql`' and it is executed successfully!");
-			Message::Default::showSql();
-	    } else if (intip == "sql") {
-	    	shell.QLDefault();
-		} else if (intip == "sql start") {
-			shell.QLStart();
-		} else if (intip == "xss help") {
-			shell.XSStart();
-		} else if (intip == "exit") {
-			break;
-		} else {
-			Message::Error::ErrorInput();
-			log.debug("User entered wrong input, no matching output!");
-		}
-	}
+    return 0;
 }
