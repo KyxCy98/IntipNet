@@ -8,20 +8,6 @@ void showXss();
 namespace Message {
 	namespace Default {
 		void msgHelp();
-		void showSql();
-	}
-	
-	namespace Sql {
-		void Sql();
-		void Menu();
-		void Error();
-		void dumpSql();
-	}
-
-	namespace Xss {
-		void Xss();
-		void Menu();
-		void Warn();
 	}
 
 	namespace Error {

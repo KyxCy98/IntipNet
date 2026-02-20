@@ -47,6 +47,7 @@ setup:
 	@mkdir -p $(BIN_DIR) $(OBJ_DIR) debug
 
 clean:
+	@clear
 	@echo "$(YELLOW)Cleaning up build artifacts...$(RESET)"
 	@rm -rf $(BIN_DIR) debug
 	@echo "$(TICK) $(GREEN)Cleaned!$(RESET)"
