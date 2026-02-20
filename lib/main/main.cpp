@@ -110,6 +110,11 @@ int main() {
     std::cout << "\t\t\tWelcome to IntipNet!\n";
     std::cout << "\t\t\tTo use IntipNet type 'help' or 'start'!\n\n";
 
+	int check = std::system("python3 lib/main/engine/check.py"); // module check
+	if (check != 0) {
+    	return 1;
+	}
+
     while (true) {
         std::cout << "[\033[31mroot\033[37m@intip]~# ";
         
