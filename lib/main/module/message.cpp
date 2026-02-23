@@ -13,7 +13,11 @@ namespace Message {
 			std::cout << "help <option> — to display the help menu specifically\n";
 			std::cout << "start <option> — to perform scanning or run scripts\n\n";
 			std::cout << RED << "Scanning:\n" << RESET << std::endl;
-			std::cout << "port — scanning using nmap for bf port\n";
+			std::cout << "port - scanning using nmap for bf port\n";
+			std::cout << "subdo - enumeration subdomain" << std::endl;
+			std::cout << "archive - retrieve all url for crawling\n" << std::endl;
+			std::cout << RED << "System:\n" << RESET << std::endl;
+			std::cout << "update - update tools to latest version" << std::endl;
 		}
 	}
 	

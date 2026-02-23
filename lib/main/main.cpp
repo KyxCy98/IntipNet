@@ -133,22 +133,43 @@ int main() {
             log.debug("Executing help sql command");
 		}
         else if (userInput == "port") {
+			log.info("Statrted scanning port using nmap.");
 			std::string target;
 			std::cout << "[\033[31mroot\033[37m@intip]~/target# ";
 
 			std::getline(std::cin, target);
 
 			Auto::Exec::PortScanner::start(target);
+			log.debug("Auto::Exec::PortScanner::start() called successfully");
 			Auto::Exec::PortScanner::end();
+			log.debug("Auto::Exec::PortScanner::end() called successfully");
         }
 		else if (userInput == "subdo") {
+			log.info("Started scanning subdomain enumeration using subfinder and nmap");
 			std::string target;
 			std::cout << "[\033[31mroot\033[37m@intip]~/target# ";
 
 			std::getline(std::cin, target);
 
 			Auto::Exec::SubdomainEnum::start(target);
+			log.debug("Auto::Exec::SubdomainEnum::start() called successfully");
 			Auto::Exec::SubdomainEnum::end();
+			log.debug("Auto::Exec::SubdomainEnum::end() called successfully");
+		}
+		else if (userInput == "archive") {
+			log.info("Started scanning archive website using waybackurl");
+			std::string target;
+			std::cout << "[\033[31mroot\033[37m@intip]~/target# ";
+
+			std::getline(std::cin, target);
+
+			Auto::Exec::Archive::start(target);
+			log.debug("Auto::Exec::Archive::start() called successfully");
+			Auto::Exec::Archive::end();
+			log.debug("Auto::Exec::Archive::end() called successfully");
+		}
+		else if (userInput == "update") {
+			log.info("User update tool");
 		}
      	else if (userInput == "clear") {
             Engine::Command::exec("clear");

@@ -15,6 +15,12 @@ namespace Auto {
             static void start(const std::string& target);
             static void end();
         };
+
+        class Archive {
+            public:
+            static void start(const std::string& target);
+            static void end();
+        };
     }
 }
 

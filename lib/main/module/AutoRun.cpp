@@ -52,13 +52,50 @@ namespace Auto {
             std::string httpx = "cat " + target + "_tmp.tmp | httpx -sc -o " + target + "_sc.httpx > /dev/null 2>&1";
             std::system(httpx.c_str());
 
-            std::cout << "      Clearing tmp file.. showing the result.." << std::endl;
+            std::cout << "      Clearing tmp file.. showing the result..\n" << std::endl;
             std::string clear = "rm *.tmp | cat " + target + "_sc.httpx";
             std::system(clear.c_str());
         }
 
         void SubdomainEnum::end() {
             std::cout << "\n      End scanning. finished at: " << getTime() << std::endl;
+        }
+        //
+        // end section
+        //
+
+        //
+        // archive section
+        //
+        void Archive::start(const std::string& target) {
+            std::cout << "\n      Archive checking for: " << target << std::endl;
+            std::cout << "      Scanning started: " << getTime() << std::endl;
+            std::cout << "      This process using " << BLUE << "Wayback Machine" << RESET << " and using " << BLUE << "Httpx\n" << RESET << std::endl;
+
+            std::string mcd = "python3 lib/main/engine/archive.py -u " + target + " -o --timeout 30 --retries 5 --backoff 2";
+            std::system(mcd.c_str());
+
+            std::cout << "\n      Archive scanning done.. running httpx and filtering status code" << std::endl;
+
+            std::string httpx = "cat wayback-" + target + ".txt | httpx -sc -o " + target + "_sc.httpx > /dev/null 2>&1";
+            std::system(httpx.c_str()); 
+
+            std::string dir = "mkdir -p tmp/" + target;
+            std::string sc200 = "cat " + target + "_sc.httpx | grep '200' > tmp/" + target + "/200.tmp";
+            std::string sc302 = "cat " + target + "_sc.httpx | grep '302' > tmp/" + target + "/302.tmp";
+            std::string sc403 = "cat " + target + "_sc.httpx | grep '403' > tmp/" + target + "/403.tmp";
+            std::string sc404 = "cat " + target + "_sc.httpx | grep '404' > tmp/" + target + "/404.tmp";
+
+            // std::string full = dir + sc200 + sc302 + sc403 + sc404;
+            std::string full = sc200 + " " + sc302 + " " + sc403 + " " + sc404;
+
+            std::cout << "      Summary scanning saved at: " << std::endl;
+            std::system(dir.c_str());
+            std::system(full.c_str());
+        }
+
+        void Archive::end() {
+            std::cout << "\n      End scanning. finished at: " << getTime() << std::endl;            
         }
         //
         // end section

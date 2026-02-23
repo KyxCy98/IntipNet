@@ -53,10 +53,20 @@ clean:
 	@echo "$(TICK) $(GREEN)Cleaned!$(RESET)"
 
 run: all
-	@echo "$(BLUE)==========================================$(RESET)"
-	@echo "$(CYAN)Launching:$(RESET) $(TARGET)"
-	@echo "$(BLUE)==========================================$(RESET)"
-	@./$(TARGET)
+	@clear
+	@if [ ! -f $(TARGET) ]; then \
+		echo "$(CYAN)Error:$(RESET) Binary $(TARGET) not found. Build failed."; \
+		exit 1; \
+	fi
+	@echo "$(CYAN)Launching:$(RESET) $(WHITE)$(TARGET)$(RESET)"
+	@echo "$(CYAN)Version:$(RESET)   $(WHITE)1.4$(RESET)"
+	@echo "$(CYAN)User:$(RESET)      $(WHITE)$$(whoami)$(RESET)"
+	@echo "$(CYAN)System:$(RESET)    $(WHITE)$$(uname -s -m)$(RESET)"
+	@echo "$(CYAN)Directory:$(RESET) $(WHITE)$$(pwd)$(RESET)"
+	@echo "$(CYAN)Status:$(RESET)    $(WHITE)Executing binary...$(RESET)"
+	@echo ""
+	@sleep 3
+	@./$(TARGET) || (echo "$(CYAN)Error:$(RESET) Program exited with error code $$?"; exit 1)
 
 help:
 	@echo "$(BLUE)Available commands:$(RESET)"
