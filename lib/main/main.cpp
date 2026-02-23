@@ -2,182 +2,159 @@
 #include <string>
 #include <cstdlib>
 #include <fstream>
-#include <sys/stat.h>
+#include <memory>
 #include "nlohmann/json.hpp"
 #include "logger.hpp"
-#include <unordered_map>
 #include "message.hpp"
 #include "banner.hpp"
 #include "engine.hpp"
 #include "AutoRun.hpp"
-#define RESET "\e[37m"
-#define BLUE "\e[34m"
-#define GREEN "\e[32m"
-#define RED "\e[31m"
+#include "Depencies.hpp"
+#include "Secure.hpp"
 
 using json = nlohmann::json;
 
-void intel(const char* color, const char* text) {
-	std::cout << color << text << RESET << std::endl;
-}
-
 void checkconnection() {
-	int check = system("ping -c 4 google.com > /dev/null 2>&1");
-	if (check == 0) {
-		std::cout << "stable connection!" << std::endl;
-	} else {
-		Message::Error::ErrorConnection();
-		return;
-	}
+    int check = std::system("ping -c 4 google.com > /dev/null 2>&1");
+    if (check == 0) {
+        std::cout << "stable connection!" << std::endl;
+    } else {
+        Message::Error::ErrorConnection();
+    }
 }
 
 class Output {
-	public:
-		void warn(const char* text) {
-			std::cout << "[" << "\e[31m" << "WRN" << "\e[37m" << "] " << text << std::endl;
-		}
-
-		void info(const char* text) {
-			std::cout << "[" << "\e[32m" << "INF" << "\e[37m" << "] " << text << std::endl;
-		}
-
-		void debug(const char* text) {
-			std::cout << "[" << "\e[34m" << "DBG" << "\e[37m" << "] " << text << std::endl;
-		}
+public:
+    void warn(const std::string& text) {
+        std::cout << "[\e[31mWRN\e[37m] " << text << std::endl;
+    }
+    void info(const std::string& text) {
+        std::cout << "[\e[32mINF\e[37m] " << text << std::endl;
+    }
+    void debug(const std::string& text) {
+        std::cout << "[\e[34mDBG\e[37m] " << text << std::endl;
+    }
 };
 
 class Start {
-	private:
-		//
-		// LOAD CONFIG
-		//	
-		std::string name;
-		std::string desc;
-		std::string shell;
-		std::string author;
-		std::string arg;
-		
-	public:
-		Logger log{"debug/debug.log"};
-		Output opt;
+private:
+    std::string name, desc, shell, author, arg;
+        
+public:
+    std::unique_ptr<Logger> log;
+    Output opt;
 
-		void scan(const char* shellcmd) {
-			std::string cmd = std::string(shellcmd) + " > /dev/null 2>&1";
-			system(cmd.c_str());
-			log.debug(shellcmd);
-			log.info("successfully executed shell");
-		}
+    Start(const std::string& logPath) {
+        log = std::make_unique<Logger>(logPath);
+    }
 
-		//
-		// Json for template
-		//		
-	    void render(const char* ren) {
-	    	std::ifstream f(ren);
+    void scan(const std::string& shellcmd) {
+        std::string cmd = shellcmd + " > /dev/null 2>&1";
+        std::system(cmd.c_str());
+        if(log) {
+            log->debug(shellcmd);
+            log->info("successfully executed shell");
+        }
+    }
 
-	    	if (!f.is_open()) {
-	    		log.warn("file template not found!");
-	    		return;
-	    	}
+    void render(const std::string& ren) {
+        std::ifstream f(ren);
+        if (!f.is_open()) {
+            if(log) log->warn("file template not found!");
+            return;
+        }
 
-	    	try {
-	    		json cfg = json::parse(f);
-	    		name	= cfg.value("name", "null");
-	    		desc	= cfg.value("desc", "null");
-	    		shell   = cfg.value("shell", "null");
-	    		author	= cfg.value("author", "null");
-	    		arg		= cfg.value("arg", "null");
-	    	} catch (json::exception& e) {
-	    		log.warn("HIT -> " + std::string(e.what()));
-	    	}
-	    }		
+        try {
+            json cfg = json::parse(f);
+            name   = cfg.value("name", "null");
+            desc   = cfg.value("desc", "null");
+            shell  = cfg.value("shell", "null");
+            author = cfg.value("author", "null");
+            arg    = cfg.value("arg", "null");
+        } catch (const json::exception& e) {
+            if(log) log->warn("HIT -> " + std::string(e.what()));
+        }
+    }       
 };
 
 int main() {
-    // Resource
-    Logger log("debug/debug.log");
-    Start shell;
+    auto log = std::make_unique<Logger>("debug/debug.log");
+    auto shell = std::make_unique<Start>("debug/debug.log");
+    
     std::string userInput;
-    log.info("Started IntipNet");
-    shell.scan("nmap");
+    log->info("Started IntipNet");
+    shell->scan("nmap");
 
+    // UX: Clear Screen
     std::cout << "\033[2J\033[1;1H"; 
-    log.debug("Terminal cleared successfully.");
+    log->debug("Terminal cleared successfully.");
 
     checkconnection();
     banner();
-    log.debug("'banner()' called successfully");
+    log->debug("'banner()' called successfully");
 
     std::cout << "\t\t\tWelcome to IntipNet!\n";
     std::cout << "\t\t\tTo use IntipNet type 'help' or 'start'!\n\n";
 
-	int check = std::system("python3 lib/main/engine/check.py"); // module check
-	if (check != 0) {
-    	return 1;
-	}
-
+    __MODULE__::__CHECK__::check_requirement();
+    
     while (true) {
         std::cout << "[\033[31mroot\033[37m@intip]~# ";
         
         if (!std::getline(std::cin, userInput) || userInput == "exit" || userInput == "q") {
-            log.info("User exited the session.");
-			Message::Exit::ExitMSG();
+            log->info("User exited the session.");
+            Message::Exit::ExitMSG();
             break;
         }
 
-        // Command Handling
+        secureInput(userInput);
+
         if (userInput == "help" || userInput == "ls") {
-            log.debug("Executing help command");
+            log->debug("Executing help command");
             Message::Default::msgHelp();
         } 
-        else if (userInput == "help sql") {
-            log.debug("Executing help sql command");
-		}
         else if (userInput == "port") {
-			log.info("Statrted scanning port using nmap.");
-			std::string target;
-			std::cout << "[\033[31mroot\033[37m@intip]~/target# ";
+            log->info("Started scanning port using nmap.");
+            std::string target;
+            std::cout << "[\033[31mroot\033[37m@intip]~/target# ";
+            std::getline(std::cin, target);
 
-			std::getline(std::cin, target);
-
-			Auto::Exec::PortScanner::start(target);
-			log.debug("Auto::Exec::PortScanner::start() called successfully");
-			Auto::Exec::PortScanner::end();
-			log.debug("Auto::Exec::PortScanner::end() called successfully");
+            auto scanner = std::make_unique<Auto::Exec::PortScanner>();
+            scanner->start(target);
+            log->debug("PortScanner started");
+            scanner->end();
         }
-		else if (userInput == "subdo") {
-			log.info("Started scanning subdomain enumeration using subfinder and nmap");
-			std::string target;
-			std::cout << "[\033[31mroot\033[37m@intip]~/target# ";
+        else if (userInput == "subdo") {
+            log->info("Started scanning subdomain enumeration");
+            std::string target;
+            std::cout << "[\033[31mroot\033[37m@intip]~/target# ";
+            std::getline(std::cin, target);
 
-			std::getline(std::cin, target);
+            auto scanner = std::make_unique<Auto::Exec::SubdomainEnum>();
+            scanner->start(target);
+            scanner->end();
+        }
+        else if (userInput == "archive") {
+            log->info("Started scanning archive website");
+            std::string target;
+            std::cout << "[\033[31mroot\033[37m@intip]~/target# ";
+            std::getline(std::cin, target);
 
-			Auto::Exec::SubdomainEnum::start(target);
-			log.debug("Auto::Exec::SubdomainEnum::start() called successfully");
-			Auto::Exec::SubdomainEnum::end();
-			log.debug("Auto::Exec::SubdomainEnum::end() called successfully");
-		}
-		else if (userInput == "archive") {
-			log.info("Started scanning archive website using waybackurl");
-			std::string target;
-			std::cout << "[\033[31mroot\033[37m@intip]~/target# ";
-
-			std::getline(std::cin, target);
-
-			Auto::Exec::Archive::start(target);
-			log.debug("Auto::Exec::Archive::start() called successfully");
-			Auto::Exec::Archive::end();
-			log.debug("Auto::Exec::Archive::end() called successfully");
-		}
-		else if (userInput == "update") {
-			log.info("User update tool");
-		}
-     	else if (userInput == "clear") {
+            auto scanner = std::make_unique<Auto::Exec::Archive>();
+            scanner->start(target);
+            scanner->end();
+        }
+        else if (userInput == "update") {
+            log->info("User update tool");
+            Auto::Exec::Update::update();
+        }
+        else if (userInput == "clear") {
             Engine::Command::exec("clear");
             banner();
         } 
         else if (!userInput.empty()) {
             Message::Error::ErrorInput();
-            log.debug("Unknown input: " + userInput);
+            log->debug("Unknown input: " + userInput);
         }
     }
 

@@ -1,25 +1,39 @@
 #ifndef AUTORUN_HPP
 #define AUTORUN_HPP
+
 #include <string>
 
 namespace Auto {
     namespace Exec {
-        class PortScanner {
+        // Base class untuk mendukung polimorfisme & memory management
+        class Scanner {
         public:
-            static void start(const std::string& target); 
-            static void end();
+            virtual ~Scanner() = default;
+            virtual void start(const std::string& target) = 0;
+            virtual void end() = 0;
         };
 
-        class SubdomainEnum {
-            public:
-            static void start(const std::string& target);
-            static void end();
+        class PortScanner : public Scanner {
+        public:
+            void start(const std::string& target) override;
+            void end() override;
         };
 
-        class Archive {
-            public:
-            static void start(const std::string& target);
-            static void end();
+        class SubdomainEnum : public Scanner {
+        public:
+            void start(const std::string& target) override;
+            void end() override;
+        };
+
+        class Archive : public Scanner {
+        public:
+            void start(const std::string& target) override;
+            void end() override;
+        };
+
+        class Update {
+        public:
+            static void update();
         };
     }
 }
