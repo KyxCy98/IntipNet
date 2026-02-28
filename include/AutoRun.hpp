@@ -5,7 +5,6 @@
 
 namespace Auto {
     namespace Exec {
-        // Base class untuk mendukung polimorfisme & memory management
         class Scanner {
         public:
             virtual ~Scanner() = default;
@@ -27,6 +26,18 @@ namespace Auto {
 
         class Archive : public Scanner {
         public:
+            void start(const std::string& target) override;
+            void end() override;
+        };
+
+        class Dns : public Scanner {
+            public:
+            void start(const std::string& target) override;
+            void end() override;
+        };
+
+        class Whois : public Scanner {
+            public:
             void start(const std::string& target) override;
             void end() override;
         };

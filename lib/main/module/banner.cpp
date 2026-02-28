@@ -20,4 +20,7 @@ void banner() {
   ,;.             fE      :   ,;.                       fE                :
 	           ,                                     ,
 	 )";
+
+    std::cout << "\t\t\tWelcome to IntipNet!\n" << std::endl;
+    std::cout << "\t\t\tTo use IntipNet type 'help' or 'start'!\n\n" << std::endl;
 }

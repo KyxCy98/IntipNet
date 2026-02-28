@@ -4,13 +4,15 @@
 #include <cstdlib>
 #include <ctime>
 #include <vector>
-
+#include <array>
+#include <stdexcept>
+#include <memory>
+#include <cstdio>
 #define RESET "\e[37m"
 #define BLUE "\e[34m"
 #define GREEN "\e[32m"
 #define RED "\e[31m"
 
-// Fungsi pengecekan karakter berbahaya untuk keamanan GitHub
 bool safe(const std::string& input) {
     if (input.empty()) return false;
     std::string bidden = ";&|`$>{}[]()";
@@ -18,6 +20,19 @@ bool safe(const std::string& input) {
         if (bidden.find(c) != std::string::npos) return false;
     }
     return true;
+}
+
+std::string exec(const char* cmd) {
+    std::array<char, 128> buffer;
+    std::string result;
+    std::unique_ptr<FILE, decltype(&pclose)> pipe(popen(cmd, "r"), pclose);
+    if (!pipe) {
+        throw std::runtime_error("popen() failed!");
+    }
+    while (fgets(buffer.data(), buffer.size(), pipe.get()) != nullptr) {
+        result += buffer.data();
+    }
+    return result;
 }
 
 namespace Auto {
@@ -80,7 +95,6 @@ namespace Auto {
 
             std::system(("mkdir -p tmp/" + target).c_str());
             
-            // Refactored logic agar lebih bersih
             std::vector<std::string> codes = {"200", "302", "403", "404"};
             for(const auto& sc : codes) {
                 std::string cmd = "grep '" + sc + "' " + target + "_sc.httpx > tmp/" + target + "/" + sc + ".tmp 2>/dev/null";
@@ -91,6 +105,53 @@ namespace Auto {
         }
 
         void Archive::end() {
+            std::cout << "\n      End scanning. finished at: " << getTime() << std::endl;            
+        }
+
+        // dns record checking
+        void Dns::start(const std::string& target) {
+            if (!safe(target)) {
+                return;
+            }
+
+            std::cout << "\n      Dns lookup for: " << target << std::endl; 
+            std::cout << "      Scanning started: " << getTime() << std::endl;
+            std::cout << "      This process using module " << BLUE << "dig" << RESET << std::endl;
+
+            std::string types[] = {"A", "AAA", "MX", "NS", "TXT"};
+
+            for (const std::string& type : types) {
+                std::cout << RED << type << RESET << " Records\n" << std::endl;
+
+                std::string cmd = "dig " + target + " " + type + " +short";
+                std::string output = exec(cmd.c_str());
+
+                if (output.empty()) {
+                    std::cout << " (No Record found)" << std::endl;
+                } else {
+                    std::cout << output << std::endl;
+                }
+            }
+        }
+
+        void Whois::start(const std::string& target) {
+            if (!safe(target)) {
+                return;
+            }
+
+            std::cout << "\n      Whois lookup for: " << target << std::endl;
+            std::cout << "      Scanning started: " << getTime() << std::endl;
+            std::cout << "      This process using module " << BLUE << "whois\n" << RESET << std::endl;
+
+            std::string cmd = "whois " + target;
+            std::system(cmd.c_str());
+        }
+
+        void Whois::end() {
+            std::cout << "\n      End scanning. finished at: " << getTime() << std::endl;
+        }
+
+        void Dns::end() {
             std::cout << "\n      End scanning. finished at: " << getTime() << std::endl;            
         }
 

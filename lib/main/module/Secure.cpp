@@ -3,7 +3,7 @@
 #include <string>
 #include "logger.hpp"
 
-Logger log("debug/security.log");
+static Logger log("debug/security.log");
 
 bool sanitize(const std::string& input) {
     std::string forbidden = ";&|`$><{}[]()";

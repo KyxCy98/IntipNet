@@ -12,10 +12,19 @@ namespace Message {
 			std::cout << RED << "Option:\n" << RESET << std::endl;
 			std::cout << "help <option> — to display the help menu specifically\n";
 			std::cout << "start <option> — to perform scanning or run scripts\n\n";
+
 			std::cout << RED << "Scanning:\n" << RESET << std::endl;
 			std::cout << "port - scanning using nmap for bf port\n";
 			std::cout << "subdo - enumeration subdomain" << std::endl;
 			std::cout << "archive - retrieve all url for crawling\n" << std::endl;
+			std::cout << "dns - record lookup A,AAA,MX,TXT,NS" << std::endl;
+			std::cout << "rip - reverse ip lookup" << std::endl;
+			std::cout << "asn - autonomus system lookup" << std::endl;
+			std::cout << "who - whois information lookup" << std::endl;
+			std::cout << "ztf - dns zone transfer check" << std::endl;
+			std::cout << "cdn - cdn detection" << std::endl;
+			std::cout << "wafd - web application firewall detection" << std::endl;
+
 			std::cout << RED << "System:\n" << RESET << std::endl;
 			std::cout << "update - update tools to latest version" << std::endl;
 		}

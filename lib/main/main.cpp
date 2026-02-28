@@ -93,9 +93,6 @@ int main() {
     banner();
     log->debug("'banner()' called successfully");
 
-    std::cout << "\t\t\tWelcome to IntipNet!\n";
-    std::cout << "\t\t\tTo use IntipNet type 'help' or 'start'!\n\n";
-
     __MODULE__::__CHECK__::check_requirement();
     
     while (true) {
@@ -141,6 +138,26 @@ int main() {
             std::getline(std::cin, target);
 
             auto scanner = std::make_unique<Auto::Exec::Archive>();
+            scanner->start(target);
+            scanner->end();
+        }
+        else if (userInput == "dns") {
+            log->info("Started scanning dns");
+            std::string target;
+            std::cout << "[\033[31mroot\033[37m@intip]~/target# ";
+            std::getline(std::cin, target);
+
+            auto scanner = std::make_unique<Auto::Exec::Dns>();
+            scanner->start(target);
+            scanner->end();
+        }
+        else if (userInput == "who") {
+            log->info("Started scanning whois scan");
+            std::string target;
+            std::cout << "[\033[31mroot\033[37m@intip]~/target# ";
+            std::getline(std::cin, target);
+            
+            auto scanner = std::make_unique<Auto::Exec::Whois>();
             scanner->start(target);
             scanner->end();
         }
