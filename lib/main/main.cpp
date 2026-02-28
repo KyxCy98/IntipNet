@@ -151,6 +151,16 @@ int main() {
             scanner->start(target);
             scanner->end();
         }
+        else if (userInput == "rip") {
+            log->info("Started scanning reverse ip");
+            std::string target;
+            std::cout << "[\033[31mroot\033[37m@intip]~/target# ";
+            std::getline(std::cin, target);
+
+            auto scanner = std::make_unique<Auto::Exec::Rip>();
+            scanner->start(target);
+            scanner->end();
+        }
         else if (userInput == "who") {
             log->info("Started scanning whois scan");
             std::string target;

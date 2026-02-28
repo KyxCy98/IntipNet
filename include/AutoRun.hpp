@@ -36,6 +36,12 @@ namespace Auto {
             void end() override;
         };
 
+        class Rip : public Scanner {
+            public:
+            void start(const std::string& target) override;
+            void end() override;
+        };
+
         class Whois : public Scanner {
             public:
             void start(const std::string& target) override;

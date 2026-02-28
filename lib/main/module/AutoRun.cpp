@@ -8,6 +8,9 @@
 #include <stdexcept>
 #include <memory>
 #include <cstdio>
+#include <netdb.h>
+#include <cstring>
+#include <arpa/inet.h>
 #define RESET "\e[37m"
 #define BLUE "\e[34m"
 #define GREEN "\e[32m"
@@ -132,6 +135,52 @@ namespace Auto {
                     std::cout << output << std::endl;
                 }
             }
+        }
+
+        void Rip::start(const std::string& target) {
+            if (!safe(target)) {
+                return;
+            }
+
+            const std::string cmd = target;
+
+            struct sockaddr structSockAddr;
+            memset(&structSockAddr, 0, sizeof(structSockAddr));
+
+            structSockAddr.sa_family = AF_INET;
+            int inetPtonReturnValue {
+                inet_pton(AF_INET, cmd.c_str(), &structSockAddr.sa_data)
+            };
+
+            if(1 != inetPtonReturnValue) {
+                std::cout << "inetPtonReturnValue : " << inetPtonReturnValue << std::endl; // 0 = src doesn't contain valid address, -1 = af isn't a valid family
+            }
+
+            char hostBuffer[10000];
+            char serviceBuffer[1000];
+
+            int getNameInfoReturnValue { 
+                getnameinfo(&structSockAddr,
+                sizeof(structSockAddr),
+                hostBuffer,
+                sizeof(hostBuffer),
+                serviceBuffer,
+                sizeof(serviceBuffer), NI_NAMEREQD)
+            };
+
+            if(0 != getNameInfoReturnValue) {
+                std::cout << "getNameInfoReturnValue : " << getNameInfoReturnValue << std::endl
+                          << "gai_strerror() : " << gai_strerror(getNameInfoReturnValue) << std::endl;
+            } else {
+                std::cout << "IPAddress : " << cmd << std::endl
+                          << "hostBuffer : " << hostBuffer << std::endl
+                          << "serviceBuffer : " << serviceBuffer << std::endl;
+            }
+
+        }
+
+        void Rip::end() {
+            std::cout << "\n      End scanning. finished at: " << getTime() << std::endl;
         }
 
         void Whois::start(const std::string& target) {
