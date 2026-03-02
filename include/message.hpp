@@ -24,6 +24,10 @@ namespace Message {
 	namespace Exit {
 		void ExitMSG();
 	}
+
+	namespace App {
+		void EndScan();
+	}
 }
 
 #endif

@@ -9,7 +9,7 @@ INFO   := \033[1;34m[i]\033[0m
 
 # --- Konfigurasi ---
 CXX      := g++
-CXXFLAGS := -Wall -Wextra -std=c++17 -Iinclude -fsanitize=address -g
+CXXFLAGS := -Wall -Wextra -std=c++17 -Iinclude -fsanitize=address -g -lcurl
 DEPFLAGS  = -MT $@ -MMD -MP -MF $(OBJ_DIR)/$*.d
 
 SRC_DIR  := lib/main

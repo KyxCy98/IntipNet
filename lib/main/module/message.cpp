@@ -1,4 +1,5 @@
 #include <iostream>
+#include <ctime>
 #include "message.hpp"
 #define RESET "\e[37m"
 #define GREEN "\e[32m"
@@ -6,6 +7,16 @@
 #define BLUE "\e[34m"
  
 namespace Message {
+
+	std::string getTime() {
+        std::time_t now = std::time(0);
+        char* dt = std::ctime(&now);
+        std::string timeStr(dt);
+        if (!timeStr.empty() && timeStr.back() == '\n') timeStr.pop_back();
+        return timeStr;
+    }
+
+
 	namespace Default {
 		void msgHelp() {
 			std::cout << BLUE << "CMD\n" << RESET << std::endl;
@@ -66,6 +77,13 @@ namespace Message {
 	namespace Exit {
 		void ExitMSG() {
 			std::cout << "Thank you for using me:}" << std::endl;
+		}
+	}
+
+	// message for application in AutoRun
+	namespace App {
+		void EndScan() {
+            std::cout << "\n      End scanning. finished at: " << getTime() << std::endl;
 		}
 	}
 }

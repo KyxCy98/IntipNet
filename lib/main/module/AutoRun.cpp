@@ -11,6 +11,8 @@
 #include <netdb.h>
 #include <cstring>
 #include <arpa/inet.h>
+#include <curl/curl.h>
+#include <message.hpp>
 #define RESET "\e[37m"
 #define BLUE "\e[34m"
 #define GREEN "\e[32m"
@@ -38,6 +40,13 @@ std::string exec(const char* cmd) {
     return result;
 }
 
+// callback function curl
+
+size_t WriteCallback(void* contents, size_t size, size_t nmemb, std::string* userp) {
+    userp->append((char*)contents, size * nmemb);
+    return size * nmemb;
+}
+
 namespace Auto {
     namespace Exec {
         std::string getTime() {
@@ -61,7 +70,7 @@ namespace Auto {
         }
 
         void PortScanner::end() {
-            std::cout << "\n      End scanning. finished at: " << getTime() << "\n" << std::endl;
+            Message::App::EndScan();
         }
 
         // Subdomain Enumeration Section
@@ -81,7 +90,7 @@ namespace Auto {
         }
 
         void SubdomainEnum::end() {
-            std::cout << "\n      End scanning. finished at: " << getTime() << std::endl;
+            Message::App::EndScan();
         }
 
         // Archive Section
@@ -108,7 +117,7 @@ namespace Auto {
         }
 
         void Archive::end() {
-            std::cout << "\n      End scanning. finished at: " << getTime() << std::endl;            
+            Message::App::EndScan();           
         }
 
         // dns record checking
@@ -137,10 +146,21 @@ namespace Auto {
             }
         }
 
+        void Dns:::end() {
+            Message::App::EndScan();
+        }
+
+        //
+        // reverse ip
+        //
         void Rip::start(const std::string& target) {
             if (!safe(target)) {
                 return;
             }
+
+            std::cout << "\n      Trying reverse ip lookup on target: " << target << std::endl;
+            std::cout << "      Scanning started at: " << getTime() << std::endl;
+            std::cout << "      This process using " << BLUE << "API" << RESET << " and " << BLUE << "DNS" << RESET << " reverse lookup\n" << std::endl;
 
             const std::string cmd = target;
 
@@ -177,12 +197,43 @@ namespace Auto {
                           << "serviceBuffer : " << serviceBuffer << std::endl;
             }
 
+            std::cout << "\n      Successfully reverse dns in target.." << std::endl;
+            std::cout << "      Trying reverse ip using API on target\n" << std::endl;
+
+            CURL* curl;
+            CURLcode res;
+
+            std::string readBuffer;
+
+            curl = curl_easy_init();
+
+            if(curl) {
+                std::string api = "https://api.hackertarget.com/reverseiplookup/?q=" + target;
+
+                curl_easy_setopt(curl, CURLOPT_URL, api.c_str());
+                curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, WriteCallback);
+                curl_easy_setopt(curl, CURLOPT_WRITEDATA, &readBuffer);
+
+                res = curl_easy_perform(curl);
+                if(res != CURLE_OK) {
+                    fprintf(stderr, "curl_easy_perform() failed: %s\n", curl_easy_strerror(res));
+                    // log.warn(curl_easy_strerror(res));
+                } else {
+                    std::cout << target << std::endl;
+                    std::cout << readBuffer << std::endl;
+                }
+
+                curl_easy_cleanup(curl);
+            }
         }
 
         void Rip::end() {
-            std::cout << "\n      End scanning. finished at: " << getTime() << std::endl;
+            Message::App::EndScan();
         }
 
+        //
+        // Whois lookup
+        //
         void Whois::start(const std::string& target) {
             if (!safe(target)) {
                 return;
@@ -197,11 +248,7 @@ namespace Auto {
         }
 
         void Whois::end() {
-            std::cout << "\n      End scanning. finished at: " << getTime() << std::endl;
-        }
-
-        void Dns::end() {
-            std::cout << "\n      End scanning. finished at: " << getTime() << std::endl;            
+            Message::App::EndScan();
         }
 
         void Update::update() {
